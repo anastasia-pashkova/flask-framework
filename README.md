@@ -7,7 +7,7 @@ Requests, Heroku, and Bokeh for visualization.
 The repository contains a basic template for a Flask configuration that will
 work on Heroku.
 
-Anastasia's copy - with correct username.
+Anastasia's copy - with correct username. Another try.
 
 A [finished example](https://lemurian.herokuapp.com) that demonstrates some basic functionality.
 
