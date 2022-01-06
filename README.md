@@ -8,6 +8,7 @@ The repository contains a basic template for a Flask configuration that will
 work on Heroku.
 
 Anastasia's copy - with correct username. Another try.
+changed git config
 
 A [finished example](https://lemurian.herokuapp.com) that demonstrates some basic functionality.
 
