@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, redirect
+import pandas as pd
 import requests
 import os
 #import plotly
-from bokeh.plotting import figure
+from bokeh.plotting import figure, show
 from bokeh.resources import CDN
 from bokeh.embed import file_html
 
@@ -40,16 +41,38 @@ def fun_api():
   r = requests.get(url,
     params=query_params
   )
-  return r.json()
+
+  stock_data = r.json()
+  stock_data_prices = stock_data.get("results")
+  df = pd.DataFrame(stock_data_prices)
+
+  print(df)
+
+  html = chart_draw(df, ticker, year, month)
+
+  return html
 
 
   #return "OK!"
 
-@app.route('/chart_draw')
-def chart_draw():
-  plot = figure()
-  plot.circle([1,2], [3,4])
-  html = file_html(plot, CDN, "my plot")
+def chart_draw(df, ticker, year, month):
+
+  day_number = df.index
+  close_prices = df["c"]
+  #plot = figure()
+  #plot.circle([1,2], [3,4])
+  #html = file_html(plot, CDN, "my plot")
+
+  x = [1, 2, 3, 4, 5]
+  y = [6, 7, 2, 4, 5]
+  
+  graph_title = f'Graph of {ticker} for {month} of {year}'
+
+  p = figure(title=graph_title, x_axis_label='Day', y_axis_label='Stock Price')
+  p.line(day_number, close_prices, legend_label="Close Stock price", line_width=2)
+  
+  html = file_html(p, CDN, "Stock plot")
+
   return html
 
 @app.route('/get_chart')
