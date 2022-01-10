@@ -69,7 +69,8 @@ def chart_draw(df, ticker, year, month):
   p = figure(title=graph_title, x_axis_label='Day', y_axis_label='Stock Price')
   p.line(day_number, close_prices, legend_label="Close Stock price", line_width=2)
   
-  html = file_html(p, CDN, "Stock plot")
+  html = file_html(models=p, resources=CDN, title="Stock plot")
+  # html = file_html(models=p, resources=CDN, title="Stock plot", template='full_layout.html')
 
   return html
 
