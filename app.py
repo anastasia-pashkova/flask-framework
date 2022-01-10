@@ -26,37 +26,37 @@ def about():
   return render_template('about.html')
 
 
-@app.route('/fun_api')
-def fun_api():
+# @app.route('/fun_api')
+# def fun_api():
 
-  api_key = os.environ.get("AAP_ALPHA_API_KEY")
-  query_params = {
-    'adjusted': True, 
-    'sorat': 'sc', 
-    'limit': '120',
-    'apiKey': api_key
-   }
+#   api_key = os.environ.get("AAP_ALPHA_API_KEY")
+#   query_params = {
+#     'adjusted': True, 
+#     'sorat': 'sc', 
+#     'limit': '120',
+#     'apiKey': api_key
+#    }
 
-  ticker = 'AAPL'
-  year = 2021
-  month = '07'
-  days = 30
-  # TODO - for number of days in month and month is 2 digits
-  url = f'https://api.polygon.io/v2/aggs/ticker/{ticker}/range/1/day/{year}-{month}-01/2021-{month}-{days}'
+#   ticker = 'AAPL'
+#   year = 2021
+#   month = '07'
+#   days = 30
+#   # TODO - for number of days in month and month is 2 digits
+#   url = f'https://api.polygon.io/v2/aggs/ticker/{ticker}/range/1/day/{year}-{month}-01/2021-{month}-{days}'
 
-  r = requests.get(url,
-    params=query_params
-  )
+#   r = requests.get(url,
+#     params=query_params
+#   )
 
-  stock_data = r.json()
-  stock_data_prices = stock_data.get("results")
-  df = pd.DataFrame(stock_data_prices)
+#   stock_data = r.json()
+#   stock_data_prices = stock_data.get("results")
+#   df = pd.DataFrame(stock_data_prices)
 
-  print(df)
+#   print(df)
 
-  html = chart_draw(df, ticker, year, month)
+#   html = chart_draw(df, ticker, year, month)
 
-  return html
+#   return html
 
 
 def chart_draw(df, ticker, year, month):
@@ -64,12 +64,15 @@ def chart_draw(df, ticker, year, month):
   day_number = df.index
   close_prices = df["c"]
   
+  # TODO: make X-axis instead of index business day of the month, make it actual dates
+
   graph_title = f'Graph of {ticker} for {month} of {year}'
 
   p = figure(title=graph_title, x_axis_label='Day', y_axis_label='Stock Price')
   p.line(day_number, close_prices, legend_label="Close Stock price", line_width=2)
   
   html = file_html(models=p, resources=CDN, title="Stock plot")
+  # TODO: attempted to put the form next to chart in the full_layout template, but that did not work
   # html = file_html(models=p, resources=CDN, title="Stock plot", template='full_layout.html')
 
   return html
@@ -83,6 +86,12 @@ def retrieve_ticker_data(ticker, year, month):
     'limit': '120',
     'apiKey': api_key
    }
+
+  # TODO: better checks for years allowed where we have data, i.e. not into the future, not prior to certain day
+
+  # TODO: most stocks has ~20 business days in a month of data. Some API calls return 120, AAPL 2020 June. 
+  # Potential BUG?!? investigate
+  # https://anastasia-flask.herokuapp.com/get_chart?tickername=AAPL&year=2020&month=06
 
   # finds the number of days in that month
   _, days = monthrange(int(year), int(month))
